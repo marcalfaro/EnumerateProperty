@@ -24,16 +24,9 @@ Module Module1
             .residence = New Address With {.street = "123 New Street", .postalCode = "9999"}
         End With
 
-        'Enumerate properties
-        For Each p As System.Reflection.PropertyInfo In student.GetType().GetProperties()
-            If p.CanRead Then
-                Console.WriteLine("{0}: {1}", p.Name, p.GetValue(student, Nothing))  'possible function
-            End If
-        Next
-
         'You can also drill down nested property values...
         Console.WriteLine("Student Information:")
-        Console.WriteLine($"Name: {GetPropValue(student, "lastName")} , {GetPropValue(student, "firstName")}")
+        Console.WriteLine($"Name: {GetPropValue(student, "lastName")}, {GetPropValue(student, "firstName")}")
         Console.WriteLine($"Street: {GetPropValue(student, "residence.street")} {GetPropValue(student, "residence.postalCode")}")
 
 
@@ -42,6 +35,9 @@ Module Module1
     End Sub
 
     Function GetPropValue(ByVal obj As Object, ByVal propName As String) As Object
+        If obj Is Nothing Then Return Nothing
+        If String.IsNullOrWhiteSpace(propName) Then Return Nothing
+
         Dim nameParts As String() = propName.Split("."c)
         If nameParts.Length = 1 Then Return obj.[GetType]().GetProperty(propName).GetValue(obj, Nothing)
 
